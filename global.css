@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  /* fonts */
+  --font-roboto: Roboto;
+  --font-quicksand: Quicksand;
+
+  /* font sizes */
+  --font-size-sm: 14px;
+  --font-size-17xl: 36px;
+  --font-size-mini: 15px;
+  --font-size-21xl: 40px;
+  --font-size-base: 16px;
+  --font-size-13xl: 32px;
+  --font-size-lg: 18px;
+
+  /* Colors */
+  --white: #fff;
+  --accent: #000;
+  --primary: #f46a06;
+  --gray: #555;
+  --color-gray-100: rgba(255, 255, 255, 0.3);
+
+  /* border radiuses */
+  --br-3xs: 10px;
+}
