@@ -3,8 +3,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-df = pd.read_excel('dishes.xlsx')
-
+df = pd.read_excel('dishes.xlsx',engine='openpyxl')
 
 all_ingredients = set()
 dish_ingredients = []
