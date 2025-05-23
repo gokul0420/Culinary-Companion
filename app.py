@@ -1,23 +1,36 @@
-from flask import Flask, render_template, request, jsonify
-from gradio_client import Client
+import pandas as pd
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
-app = Flask(__name__)
 
-client = Client("https://wizzseen-food.hf.space/")
+df = pd.read_excel('dishes.xlsx')
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    result = None
-    if request.method == 'POST':
-        ingredients = request.form['ingredients']
-        result = client.predict(ingredients, api_name="/predict")
-    return render_template('index.html', result=result)
 
-@app.route('/get_result', methods=['POST'])
-def get_result():
-    ingredients = request.json['ingredients']
-    result = client.predict(ingredients, api_name="/predict")
-    return jsonify(result=result)
+all_ingredients = set()
+dish_ingredients = []
 
-if __name__ == '__main__':
-    app.run(debug=True)
+for ingredients_str in df['Ingredients']:
+    ingredients = [i.strip().lower() for i in ingredients_str.split(',')]
+    dish_ingredients.append(ingredients)
+    all_ingredients.update(ingredients)
+
+ingredient_vocab = sorted(list(all_ingredients))
+
+def encode_ingredients(ingredients, vocab):
+    return [1 if item in ingredients else 0 for item in vocab]
+
+dish_vectors = [encode_ingredients(ingredients, ingredient_vocab) for ingredients in dish_ingredients]
+
+
+user_input = input("Enter your ingredients (comma-separated): ").lower()
+user_ingredients = [i.strip() for i in user_input.split(',')]
+
+user_vector = np.array(encode_ingredients(user_ingredients, ingredient_vocab)).reshape(1, -1)
+
+similarities = cosine_similarity(user_vector, dish_vectors)[0]
+ranked_indices = np.argsort(similarities)[::-1]
+
+
+print("\nRecommended Dishes:")
+for idx in ranked_indices:
+    print(f"{df['Dish Name'][idx]} (similarity: {similarities[idx]:.2f})")
